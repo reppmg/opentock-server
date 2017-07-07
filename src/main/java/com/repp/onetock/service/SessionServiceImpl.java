@@ -17,20 +17,22 @@ import org.springframework.stereotype.Service;
 @Service
 public class SessionServiceImpl implements SessionService {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     @Value("${onetok.api.key}")
     String apiKey;
 
-    Session currentSession;
+    private Session currentSession;
 
     @Autowired
-    OpenTok openTok;
+    private OpenTok openTok;
 
     @Override
-    public void unsubscribe() {
+    public void unsubscribe(String sessionId) {
         logger.debug("clearing queue for client is gone");
-        currentSession = null;
+        if (currentSession.getSessionId().equals(sessionId)) {
+            currentSession = null;
+        }
     }
 
     @Override
@@ -48,8 +50,7 @@ public class SessionServiceImpl implements SessionService {
                 e.printStackTrace();
                 return null;
             }
-            ConnectionInfo connectionInfo = new ConnectionInfo(apiKey, currentSession.getSessionId(), token);
-            return connectionInfo;
+            return new ConnectionInfo(apiKey, currentSession.getSessionId(), token);
         } else {
             logger.debug("a client is in queue");
             try {

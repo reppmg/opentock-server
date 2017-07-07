@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/session")
-public class OnetockController {
-    Logger logger = LoggerFactory.getLogger(getClass().getName());
+public class SessionController {
+    private Logger logger = LoggerFactory.getLogger(getClass().getName());
 
     @Autowired
-    SessionService sessionService;
+    private SessionService sessionService;
 
     @GetMapping
     public ConnectionInfo getConnectionInfo(){
