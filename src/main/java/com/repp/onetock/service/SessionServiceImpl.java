@@ -29,7 +29,7 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public synchronized boolean unsubscribe(String sessionId) {
-        logger.info("clearing queue for client is gone + sid = " + currentSession.getSessionId());
+        logger.info("clearing queue for client is gone + sid = " + sessionId);
         if (currentSession == null) {
             return false;
         } else {
