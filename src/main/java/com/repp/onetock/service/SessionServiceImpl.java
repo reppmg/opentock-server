@@ -22,14 +22,14 @@ public class SessionServiceImpl implements SessionService {
     @Value("${onetok.api.key}")
     String apiKey;
 
-    private Session currentSession;
+    private volatile Session currentSession;
 
     @Autowired
     private OpenTok openTok;
 
     @Override
     public synchronized boolean unsubscribe(String sessionId) {
-        logger.debug("clearing queue for client is gone");
+        logger.info("clearing queue for client is gone + sid = " + currentSession.getSessionId());
         if (currentSession == null) {
             return false;
         } else {
@@ -44,13 +44,13 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public synchronized ConnectionInfo putInQueue() {
         String token = null;
-        logger.debug("new client");
+        logger.info("new client");
         if (currentSession == null) {
-            logger.debug("queue is empty");
+            logger.info("queue is empty");
             try {
-                logger.debug("creating session");
+                logger.info("creating session");
                 currentSession = openTok.createSession();
-                logger.debug("generating token");
+                logger.info("generating token + sid = " + currentSession.getSessionId());
                 token = currentSession.generateToken();
             } catch (OpenTokException e) {
                 e.printStackTrace();
@@ -58,16 +58,16 @@ public class SessionServiceImpl implements SessionService {
             }
             return new ConnectionInfo(apiKey, currentSession.getSessionId(), token);
         } else {
-            logger.debug("a client is in queue");
+            logger.info("a client is in queue + sid = " + currentSession.getSessionId());
             try {
-                logger.debug("generating token");
+                logger.info("generating token");
                 token = currentSession.generateToken();
             } catch (OpenTokException e) {
                 e.printStackTrace();
                 return null;
             }
             ConnectionInfo connectionInfo = new ConnectionInfo(apiKey, currentSession.getSessionId(), token);
-            logger.debug("clearing queue");
+            logger.info("clearing queue");
             currentSession = null;
             return connectionInfo;
         }
