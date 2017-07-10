@@ -28,7 +28,7 @@ public class SessionServiceImpl implements SessionService {
     private OpenTok openTok;
 
     @Override
-    public boolean unsubscribe(String sessionId) {
+    public synchronized boolean unsubscribe(String sessionId) {
         logger.debug("clearing queue for client is gone");
         if (currentSession == null) {
             return false;
@@ -42,7 +42,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public ConnectionInfo putInQueue() {
+    public synchronized ConnectionInfo putInQueue() {
         String token = null;
         logger.debug("new client");
         if (currentSession == null) {
