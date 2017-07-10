@@ -22,8 +22,8 @@ public class UnsubscribeController {
     private SessionService sessionService;
 
     @GetMapping("/{sessionId}")
-    public void unsubscribe(@PathVariable String sessionId){
+    public boolean unsubscribe(@PathVariable String sessionId){
         logger.debug("New /unsubscribe request with sessionId = " + sessionId);
-        sessionService.unsubscribe(sessionId);
+        return sessionService.unsubscribe(sessionId);
     }
 }

@@ -5,5 +5,5 @@ import com.repp.onetock.dto.ConnectionInfo;
 public interface SessionService {
     ConnectionInfo putInQueue();
 
-    void unsubscribe(String session);
+    boolean unsubscribe(String session);
 }

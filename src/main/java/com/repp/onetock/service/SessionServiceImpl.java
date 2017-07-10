@@ -28,11 +28,17 @@ public class SessionServiceImpl implements SessionService {
     private OpenTok openTok;
 
     @Override
-    public void unsubscribe(String sessionId) {
+    public boolean unsubscribe(String sessionId) {
         logger.debug("clearing queue for client is gone");
-        if (currentSession.getSessionId().equals(sessionId)) {
-            currentSession = null;
+        if (currentSession == null) {
+            return false;
+        } else {
+            if (currentSession.getSessionId().equals(sessionId)) {
+                currentSession = null;
+                return true;
+            }
         }
+        return false;
     }
 
     @Override
@@ -56,9 +62,9 @@ public class SessionServiceImpl implements SessionService {
             try {
                 logger.debug("generating token");
                 token = currentSession.generateToken();
-            } catch (OpenTokException e){
+            } catch (OpenTokException e) {
                 e.printStackTrace();
-                return  null;
+                return null;
             }
             ConnectionInfo connectionInfo = new ConnectionInfo(apiKey, currentSession.getSessionId(), token);
             logger.debug("clearing queue");
